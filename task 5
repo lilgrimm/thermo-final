@@ -1,0 +1,85 @@
+
+import matplotlib.pyplot as plt
+import numpy as np
+import CoolProp.CoolProp as cp
+from tabulate import tabulate
+
+m = 300 #kg/s
+
+
+#state 1
+T1 = 858.15 #K
+p1 = 1.9e7 #Pa
+s1 = cp.PropsSI('S', 'P', p1, 'T', T1, 'Water') #J/(kg*K)
+h1 = cp.PropsSI('H', 'P', p1, 'T', T1, 'Water')/1000 #kJ/kg
+
+#varying the steam temperature
+p_low = 4000 #Pa
+p_high = 70000
+snum = 100
+
+p2 = np.linspace(p_high,p_low,snum)
+
+#state 2
+s2 = s1
+T2 = cp.PropsSI('T', 'P', p2, 'S', s2, 'Water')
+h2s = cp.PropsSI('H', 'P', p2, 'S', s2, 'Water')/1000 #kJ/kg
+h2 = -(0.92*(h1 - h2s)) + h1
+#state 3
+p3 = p2
+x3 = 0
+s3 = cp.PropsSI('S', 'P', p3, 'Q', x3, 'Water') #J/(kg*K)
+h3 = cp.PropsSI('H', 'P', p3, 'Q', x3, 'Water')/1000 #kJ/kg
+T3 = cp.PropsSI('T', 'P', p3, 'Q', x3, 'Water')
+
+#state 4
+s4 = s3
+p4 = p1
+h4s = cp.PropsSI('H', 'P', p4, 'S', s4, 'Water')/1000 #kJ/kg
+h4 = -((h3 - h4s)/0.85) + h3
+T4 = cp.PropsSI('T', 'P', p4, 'S', s4, 'Water')
+
+W_out12 = m*(h1 - h2)
+W_in34 = -m*(h3 - h4)
+W_net = W_out12 - W_in34
+print(W_net)
+
+Q_out23 = m*(h2 - h3)
+Q_in41 = -m*(h4 - h1)
+Q_net = Q_in41 - Q_out23
+print(Q_net)
+
+n = W_net / Q_in41
+print(n)
+
+# plot [Task 4]
+
+plt.close('all')
+fig, ax1 = plt.subplots()
+fig, ax2 = plt.subplots()
+fig, ax3 = plt.subplots()
+
+font = {'family' : 'serif',
+        'weight' : 'normal',
+        'size'   : 14}
+plt.rc('font', **font)
+
+color1 = 'xkcd:black'
+color2 = 'xkcd:ugly green'
+color3 = 'xkcd:barney'
+color4 = 'xkcd:vivid blue'
+color5 = 'xkcd:strawberry'
+
+ax1.set_ylabel('Thermal Efficiency of Cycle')
+ax1.set_xlabel('Condenser Pressure (Pa)')
+lns1 = ax1.plot(p2,n,'-',linewidth=1, color=color1)
+
+ax2.set_ylabel('Net Power Output (MW)')
+ax2.set_xlabel('Condenser Pressure (Pa)')
+lns3 = ax2.plot(p2,W_net/1000,'-',linewidth=1, color=color4)
+
+ax3.set_ylabel('Required Qin (MW)')
+ax3.set_xlabel('Condenser Pressure (Pa)')
+lns5 = ax3.plot(p2,Q_in41/1000,'-',linewidth=1, color=color5)
+
+plt.show()
