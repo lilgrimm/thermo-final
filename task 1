@@ -1,0 +1,59 @@
+
+import matplotlib.pyplot as plt
+import numpy as np
+import CoolProp.CoolProp as cp
+from tabulate import tabulate
+
+m = 300 #kg/s
+
+#state 1
+T1 = 858.15 #K
+p1 = 1.9e7 #Pa
+s1 = cp.PropsSI('S', 'P', p1, 'T', T1, 'Water') #J/(kg*K)
+h1 = cp.PropsSI('H', 'P', p1, 'T', T1, 'Water')/1000 #kJ/kg
+
+#state 2
+s2 = s1
+p2 = 8000 #Pa
+h2s = cp.PropsSI('H', 'P', p2, 'S', s2, 'Water')/1000 #kJ/kg
+h2 = -(0.92*(h1 - h2s)) + h1
+
+#state 3
+p3 = p2 #Pa
+x3 = 0
+s3 = cp.PropsSI('S', 'P', p3, 'Q', x3, 'Water') #J/(kg*K)
+h3 = cp.PropsSI('H', 'P', p3, 'Q', x3, 'Water')/1000 #kJ/kg
+
+#state 4
+s4 = s3
+p4 = p1
+h4s = cp.PropsSI('H', 'P', p4, 'S', s4, 'Water')/1000 #kJ/kg
+h4 = -((h3 - h4s)/0.85) + h3
+print(h4)
+
+W_out12 = m*(h1 - h2)
+W_in34 = -m*(h3 - h4)
+W_net = W_out12 - W_in34
+print(W_net)
+
+Q_out23 = m*(h2 - h3)
+Q_in41 = -m*(h4 - h1)
+Q_net = Q_in41 - Q_out23
+print(Q_net)
+
+n = W_net / Q_in41
+print(n)
+
+# table
+dataT = [["1=>2", 0, "N/A", W_out12, "out"],
+         ["2=>3", Q_out23, "out", 0, "N/A"],
+         ["3=>4", 0, "N/A", W_in34,"in"],
+         ["4=>1", Q_in41, "in", 0, "N/A"]]
+headers = ["Process", "Q (kJ)","in/out", "W", "in/out"]
+table = tabulate(dataT, headers,floatfmt=".2f", tablefmt="fancy_grid")
+print(table)
+
+datatask1 = [[n, W_net/1000, Q_net/1000]]
+headers = ["Thermal Efficiency", "Total Wout (MW)", "Total Qin (MW)"]
+task1 = tabulate(datatask1, headers,floatfmt=".2f", tablefmt="fancy_grid")
+print(task1)
