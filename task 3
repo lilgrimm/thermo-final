@@ -1,0 +1,109 @@
+
+import matplotlib.pyplot as plt
+import numpy as np
+import CoolProp.CoolProp as cp
+from tabulate import tabulate
+
+m = 300 #kg/s
+
+#FIXED STATES
+T1 = 858.15 #K
+p1 = 1.9e7 #Pa
+s1 = cp.PropsSI('S', 'P', p1, 'T', T1, 'Water') #J/(kg*K)
+h1 = cp.PropsSI('H', 'P', p1, 'T', T1, 'Water')/1000 #kJ/kg
+#state 2
+s2 = s1
+p2 = 8000 #Pa
+T2 = cp.PropsSI('T', 'P', p2, 'S', s2, 'Water')
+h2s = cp.PropsSI('H', 'P', p2, 'S', s2, 'Water')/1000 #kJ/kg
+h2 = -(0.85*(h1 - h2s)) + h1
+#state 3
+p3 = p2 #Pa
+x3 = 0
+s3 = cp.PropsSI('S', 'P', p3, 'Q', x3, 'Water') #J/(kg*K)
+h3 = cp.PropsSI('H', 'P', p3, 'Q', x3, 'Water')/1000 #kJ/kg
+T3 = cp.PropsSI('T', 'P', p3, 'Q', x3, 'Water')
+#state 4
+s4 = s3
+p4 = p1
+h4s = cp.PropsSI('H', 'P', p4, 'S', s4, 'Water')/1000 #kJ/kg
+h4 = -((h3 - h4s)/0.85) + h3
+T4 = cp.PropsSI('T', 'P', p4, 'S', s4, 'Water')
+
+#varying the turbine
+h2_low = .7
+h2_high = 1
+snum = 30
+h2_array = np.linspace(h2_low,h2_high,snum)
+
+h2t = -(h2_array*(h1 - h2s)) + h1
+
+W_out1 = m*(h1 - h2t)
+W_in1 = -m*(h3 - h4)
+W_net1 = W_out1 - W_in1
+print(W_out1/1000)
+
+
+Q_out1 = m*(h2t - h3)
+Q_in1 = -m*(h4 - h1)
+Q_net1 = Q_in1 - Q_out1
+
+n_pfixed = W_net1 / Q_in1
+
+#varying the pump
+h4_low = .7
+h4_high = 1
+h4_array = np.linspace(h4_low,h4_high,snum)
+
+h4p = -((h3 - h4s)/h4_array) + h3
+
+W_out2 = m*(h1 - h2)
+W_in2 = -m*(h3 - h4p)
+W_net2 = W_out2 - W_in2
+
+Q_out2 = m*(h2 - h3)
+Q_in2 = -m*(h4p - h1)
+Q_net2 = Q_in2 - Q_out2
+print(Q_in2)
+
+n_tfixed = W_net2 / Q_in2
+print(n_tfixed)
+print(n_pfixed)
+# plot [Task 3]
+
+plt.close('all')
+fig, ax1 = plt.subplots()
+fig, ax2 = plt.subplots()
+
+font = {'family' : 'serif',
+        'weight' : 'normal',
+        'size'   : 14}
+plt.rc('font', **font)
+
+color1 = 'xkcd:black'
+color2 = 'xkcd:ugly green'
+color3 = 'xkcd:barney'
+color4 = 'xkcd:vivid blue'
+color5 = 'xkcd:strawberry'
+
+ax1.set_ylabel('Thermal Efficiency of Cycle')
+ax1.set_xlabel('Isentropic Efficiency')
+lns1 = ax1.plot(h2_array,n_pfixed,'-',linewidth=1, color=color4,label='$turbine$')
+lns2 = ax1.plot(h4_array,n_tfixed,'-',linewidth=1, color=color5,label='$pump$')
+
+lns = lns1+lns2
+labs = [l.get_label() for l in lns]
+ax1.legend(lns, labs, loc=0)
+plt.legend(loc='upper left')
+
+ax2.set_ylabel('Net Power Output (MW)')
+ax2.set_xlabel('Isentropic Efficiency')
+lns3 = ax2.plot(h2_array,W_net1/1000,'-',linewidth=1, color=color4,label='$turbine$')
+lns4 = ax2.plot(h4_array,W_net2/1000,'-',linewidth=1, color=color5,label='$pump$')
+
+lns = lns3+lns4
+labs = [l.get_label() for l in lns]
+ax1.legend(lns, labs, loc=0)
+plt.legend(loc='upper left')
+
+plt.show()
