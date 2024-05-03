@@ -99,7 +99,7 @@ s11 = cp.PropsSI('S', 'P', p11, 'T', T11, 'Water') #J/kg*K
 Q11 = cp.PropsSI('Q', 'P', p11, 'T', T11, 'Water')
 
 #state 12
-p12 = 8000 #Pa
+p12 = p7 #Pa
 h12 = h6 #assumption
 s12 = cp.PropsSI('S', 'P', p12, 'H', h12, 'Water') #J/(kg*K)
 Q12 = cp.PropsSI('Q', 'P', p12, 'H', h12, 'Water')
@@ -140,6 +140,7 @@ Q15 = cp.PropsSI('Q', 'P', p15, 'H', h15, 'Water')
 T15 = cp.PropsSI('T', 'P', p15, 'H', h15, 'Water') #K
 
 #state 16
+m16 = m1
 p16 = p1
 s16 = s15
 h16s = cp.PropsSI('H', 'P', p16, 'S', s16, 'Water') #J/kg
@@ -149,22 +150,28 @@ T16 = cp.PropsSI('T', 'P', p16, 'H', h16, 'Water') #K
 
 
 
+# table [task 7]
+dataT = [["1.00", p1/100000, T1, h1/1000, s1/1000, m1, "---"],
+         ["2.00", p2/100000, T2, h2/1000, s2/1000, m2, "vapor"],
+         ["3.00", p3/100000, T3, h3/1000, s3/1000, m3, "---"],
+         ["4.00", p4/100000, T4, h4/1000, s4/1000, m4, "---"],
+         ["5.00", p5/100000, T5, h5/1000, s5/1000, m5, "---"],
+         ["6.00", p6/100000, T6, h6/1000, s6/1000, m6, "---"],
+         ["7.00", p7/100000, T7, h7/1000, s7/1000, m7, "---"],
+         ["8.00", p8/100000, T8, h8/1000, s8/1000, m8, "---"],
+         ["9.00", p9/100000, T9, h9/1000, s9/1000, m9, "saturated liquid"],
+         ["10.00", p10/100000, T10, h10/1000, s10/1000, m10, "---"],
+         ["11.00", p11/100000, T11, h11/1000, s11/1000, m11, "---"],
+         ["12.00", p12/100000, T12, h12/1000, s12/1000, m12, "vapor"],
+         ["13.00", p13/100000, T13, h13/1000, s13/1000, m13, "---"],
+         ["14.00", p14/100000, T14, h14/1000, s14/1000, m14, "---"],
+         ["15.00", p15/100000, T15, h15/1000, s15/1000, m15, "---"],
+         ["16.00", p16/100000, T16, h16/1000, s16/1000, m16, "---"]]
 
+headers = ["State", "p (bar)", "T (K)", "h (kJ/kg)", "s (kJ/kg*K)", "m (kg/s)", "Phase"]
+table = tabulate(dataT, headers,floatfmt=".2f", tablefmt="fancy_grid")
+print(table)
 
-
-# table [task 1]
-# dataT = [["1=>2", 0, "N/A", W_out12/1000, "out"],
-#          ["2=>3", Q_out23/1000, "out", 0, "N/A"],
-#          ["3=>4", 0, "N/A", W_in34/1000,"in"],
-#          ["4=>1", Q_in41/1000, "in", 0, "N/A"]]
-# headers = ["Process", "Q (MW)","in/out", "W (MW)", "in/out"]
-# table = tabulate(dataT, headers,floatfmt=".2f", tablefmt="fancy_grid")
-# print(table)
-#
-# datatask1 = [[n, W_net/1000, Q_net/1000]]
-# headers = ["Thermal Efficiency", "Total Wout (MW)", "Total Qin (MW)"]
-# task1 = tabulate(datatask1, headers,floatfmt=".2f", tablefmt="fancy_grid")
-# print(task1)
 
 
 
