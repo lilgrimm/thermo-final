@@ -1,0 +1,117 @@
+
+import matplotlib.pyplot as plt
+import numpy as np
+import CoolProp.CoolProp as cp
+from tabulate import tabulate
+
+percent_flow = 0.2
+
+#state 1
+m1 = 300 #kg/s
+p1 = 1.9e7 #Pa
+T1 = 858.15 #K
+s1 = cp.PropsSI('S', 'P', p1, 'T', T1, 'Water') #J/(kg*K)
+h1 = cp.PropsSI('H', 'P', p1, 'T', T1, 'Water') #J/kg
+
+#state 2
+m2 = m1 #kg/s
+p2 = 1e7 #Pa, assumption = p3
+s2 = s1
+h2s = cp.PropsSI('H', 'P', p2, 'S', s2, 'Water') #J/kg
+h2 = -(0.92*(h1 - h2s)) + h1
+
+#state 3
+m3 = m2 #kg/s
+p3 = 1e7 #Pa
+T3 = 858.15 #K
+s3 = cp.PropsSI('S', 'P', p3, 'T', T3, 'Water') #J/(kg*K)
+h3 = cp.PropsSI('H', 'P', p3, 'T', T3, 'Water') #J/kg
+
+#state 4
+m4 = m3 #kg/s
+p4 = 5e6 #assumption
+s4 = s3
+h4s = cp.PropsSI('H', 'P', p4, 'S', s3, 'Water') #J/kg
+h4 = -(0.92*(h3 - h4s)) + h3
+T4 = cp.PropsSI('T', 'P', p4, 'H', h4, 'Water')
+
+#state 5
+m5 = (1-percent_flow)*m4
+p5 = 5e6 #Pa
+T5 = T4 #assumption
+s5 = cp.PropsSI('S', 'P', p5, 'T', T5, 'Water') #J/(kg*K)
+h5 = cp.PropsSI('H', 'P', p5, 'T', T5, 'Water') #J/kg
+
+#state 6
+m6 = m5
+p6 = 1.5e6 #Pa, assumption from flow sep?
+s6 = s5
+h6s = cp.PropsSI('H', 'P', p6, 'S', s6, 'Water') #J/kg
+h6 = -(0.92*(h5 - h6s)) + h5
+
+#state 7
+p7 = 1.5e6
+h7 = h6 #assumption, flow sep
+s7 = cp.PropsSI('S', 'P', p7, 'H', h7, 'Water') #J/(kg*K)
+
+#state 8
+p8 = 8000 #Pa
+s8 = s7
+h8s = cp.PropsSI('H', 'P', p8, 'S', s8, 'Water') #J/kg
+h8 = -(0.92*(h7 - h8s)) + h7
+
+#state 9
+p9 = p8
+x9 = 0
+s9 = cp.PropsSI('S', 'P', p9, 'Q', x9, 'Water') #J/kg
+h9 = cp.PropsSI('H', 'P', p9, 'Q', x9, 'Water') #J/kg
+
+#state 10
+s10 = s9
+# h10s = cp.PropsSI('H', 'P', p4, 'S', s4, 'Water') #J/kg
+# h10 = -((h9 - h10s)/0.85) + h9
+
+#state 11
+m11 = (percent_flow)*m4
+p11 = 5e6 #assumption
+T11 = T4 #assumption
+
+#state 12
+p12 = 8000 #Pa
+h12 = h6
+
+#state 13
+p13 = p12
+x13 = 0
+
+#state 14
+
+#state 15 [COGEN]
+m15 = m1
+h15 = (1/m15) * ((m11*h11) + (m10*h10) + (m14*h14)) #J/kg
+
+#state 16
+s16 = s15
+
+
+
+
+
+
+
+# table [task 1]
+# dataT = [["1=>2", 0, "N/A", W_out12/1000, "out"],
+#          ["2=>3", Q_out23/1000, "out", 0, "N/A"],
+#          ["3=>4", 0, "N/A", W_in34/1000,"in"],
+#          ["4=>1", Q_in41/1000, "in", 0, "N/A"]]
+# headers = ["Process", "Q (MW)","in/out", "W (MW)", "in/out"]
+# table = tabulate(dataT, headers,floatfmt=".2f", tablefmt="fancy_grid")
+# print(table)
+#
+# datatask1 = [[n, W_net/1000, Q_net/1000]]
+# headers = ["Thermal Efficiency", "Total Wout (MW)", "Total Qin (MW)"]
+# task1 = tabulate(datatask1, headers,floatfmt=".2f", tablefmt="fancy_grid")
+# print(task1)
+
+
+
