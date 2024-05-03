@@ -148,25 +148,45 @@ h16 = -((h15 - h16s)/0.85) + h15
 Q16 = cp.PropsSI('Q', 'P', p16, 'H', h16, 'Water')
 T16 = cp.PropsSI('T', 'P', p16, 'H', h16, 'Water') #K
 
+#state check
+#T = T1
+#P = P1
+#s = s1
+# T_sat = cp.PropsSI('T', 'P', P, 'Q', 1, 'water')
+# sat = np.isclose(T_sat, T)
+# if sat: # if your state temp equals the sat. temp at your state pressure
+#     s_liq = cp.PropsSI('S', 'T', T, 'Q', 0, 'water')
+#     s_vap = cp.PropsSI('S', 'T', T, 'Q', 1, 'water')
+#     if np.isclose(s, s_liq):
+#         print("Saturated Liquid")
+#     elif np.isclose(s,s_vap):
+#         print('Saturated Vapor')
+#     else:
+#         print("2-phase Mixture")
+# else:
+#     if T_sat < T: # sat. temp corresponding to your state pressure is lower than your actual state temp
+#         print("Superheated Vapor")
+#     else:
+#         print("Compressed Liquid")
 
 
 # table [task 7]
-dataT = [["1.00", p1/100000, T1, h1/1000, s1/1000, m1, "vapor"],
-         ["2.00", p2/100000, T2, h2/1000, s2/1000, m2, "vapor"],
-         ["3.00", p3/100000, T3, h3/1000, s3/1000, m3, "vapor"],
-         ["4.00", p4/100000, T4, h4/1000, s4/1000, m4, "vapor"],
-         ["5.00", p5/100000, T5, h5/1000, s5/1000, m5, "vapor"],
-         ["6.00", p6/100000, T6, h6/1000, s6/1000, m6, "vapor"],
-         ["7.00", p7/100000, T7, h7/1000, s7/1000, m7, "vapor"],
+dataT = [["1.00", p1/100000, T1, h1/1000, s1/1000, m1, "superheated vapor"],
+         ["2.00", p2/100000, T2, h2/1000, s2/1000, m2, "superheated vapor"],
+         ["3.00", p3/100000, T3, h3/1000, s3/1000, m3, "superheated vapor"],
+         ["4.00", p4/100000, T4, h4/1000, s4/1000, m4, "superheated vapor"],
+         ["5.00", p5/100000, T5, h5/1000, s5/1000, m5, "superheated vapor"],
+         ["6.00", p6/100000, T6, h6/1000, s6/1000, m6, "superheated vapor"],
+         ["7.00", p7/100000, T7, h7/1000, s7/1000, m7, "superheated vapor"],
          ["8.00", p8/100000, T8, h8/1000, s8/1000, m8, "2-phase"],
          ["9.00", p9/100000, T9, h9/1000, s9/1000, m9, "saturated liquid"],
-         ["10.00", p10/100000, T10, h10/1000, s10/1000, m10, "vapor"],
-         ["11.00", p11/100000, T11, h11/1000, s11/1000, m11, "vapor"],
-         ["12.00", p12/100000, T12, h12/1000, s12/1000, m12, "vapor"],
+         ["10.00", p10/100000, T10, h10/1000, s10/1000, m10, "compressed liquid"],
+         ["11.00", p11/100000, T11, h11/1000, s11/1000, m11, "--"],
+         ["12.00", p12/100000, T12, h12/1000, s12/1000, m12, "superheated vapor"],
          ["13.00", p13/100000, T13, h13/1000, s13/1000, m13, "saturated liquid"],
-         ["14.00", p14/100000, T14, h14/1000, s14/1000, m14, "vapor"],
-         ["15.00", p15/100000, T15, h15/1000, s15/1000, m15, "vapor"],
-         ["16.00", p16/100000, T16, h16/1000, s16/1000, m16, "vapor"]]
+         ["14.00", p14/100000, T14, h14/1000, s14/1000, m14, "compressed liquid"],
+         ["15.00", p15/100000, T15, h15/1000, s15/1000, m15, "compressed liquid"],
+         ["16.00", p16/100000, T16, h16/1000, s16/1000, m16, "compressed liquid"]]
 
 headers = ["State", "p (bar)", "T (K)", "h (kJ/kg)", "s (kJ/kg*K)", "m (kg/s)", "Phase"]
 table = tabulate(dataT, headers,floatfmt=".2f", tablefmt="fancy_grid")
