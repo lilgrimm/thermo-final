@@ -149,9 +149,9 @@ Q16 = cp.PropsSI('Q', 'P', p16, 'H', h16, 'Water')
 T16 = cp.PropsSI('T', 'P', p16, 'H', h16, 'Water') #K
 
 #state check
-#T = T1
-#P = P1
-#s = s1
+# T = T1
+# P = p1
+# s = s1
 # T_sat = cp.PropsSI('T', 'P', P, 'Q', 1, 'water')
 # sat = np.isclose(T_sat, T)
 # if sat: # if your state temp equals the sat. temp at your state pressure
@@ -181,7 +181,7 @@ dataT = [["1.00", p1/100000, T1, h1/1000, s1/1000, m1, "superheated vapor"],
          ["8.00", p8/100000, T8, h8/1000, s8/1000, m8, "2-phase"],
          ["9.00", p9/100000, T9, h9/1000, s9/1000, m9, "saturated liquid"],
          ["10.00", p10/100000, T10, h10/1000, s10/1000, m10, "compressed liquid"],
-         ["11.00", p11/100000, T11, h11/1000, s11/1000, m11, "--"],
+         ["11.00", p11/100000, T11, h11/1000, s11/1000, m11, "superheated vapor"],
          ["12.00", p12/100000, T12, h12/1000, s12/1000, m12, "superheated vapor"],
          ["13.00", p13/100000, T13, h13/1000, s13/1000, m13, "saturated liquid"],
          ["14.00", p14/100000, T14, h14/1000, s14/1000, m14, "compressed liquid"],
