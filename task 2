@@ -1,0 +1,122 @@
+
+import matplotlib.pyplot as plt
+import numpy as np
+import CoolProp.CoolProp as cp
+from tabulate import tabulate
+
+m = 300 #kg/s
+
+#state 1
+T1 = 858.15 #K
+p1 = 1.9e7 #Pa
+s1 = cp.PropsSI('S', 'P', p1, 'T', T1, 'Water') #J/(kg*K)
+h1 = cp.PropsSI('H', 'P', p1, 'T', T1, 'Water')/1000 #kJ/kg
+
+#state 2
+s2 = s1
+p2 = 8000 #Pa
+h2s = cp.PropsSI('H', 'P', p2, 'S', s2, 'Water')/1000 #kJ/kg
+h2 = -(0.92*(h1 - h2s)) + h1
+T2 = cp.PropsSI('T', 'P', p2, 'S', s2, 'Water')
+
+#state 3
+p3 = p2 #Pa
+x3 = 0
+s3 = cp.PropsSI('S', 'P', p3, 'Q', x3, 'Water') #J/(kg*K)
+h3 = cp.PropsSI('H', 'P', p3, 'Q', x3, 'Water')/1000 #kJ/kg
+T3 = cp.PropsSI('T', 'P', p3, 'Q', x3, 'Water')
+
+#state 4
+s4 = s3
+p4 = p1
+h4s = cp.PropsSI('H', 'P', p4, 'S', s4, 'Water')/1000 #kJ/kg
+h4 = -((h3 - h4s)/0.85) + h3
+T4 = cp.PropsSI('T', 'P', p4, 'S', s4, 'Water')
+print(h4)
+
+W_out12 = m*(h1 - h2)
+W_in34 = -m*(h3 - h4)
+W_net = W_out12 - W_in34
+print(W_net)
+
+Q_out23 = m*(h2 - h3)
+Q_in41 = -m*(h4 - h1)
+Q_net = Q_in41 - Q_out23
+print(Q_net)
+
+n = W_net / Q_in41
+print(n)
+
+# table [task 1]
+dataT = [["1=>2", 0, "N/A", W_out12/1000, "out"],
+         ["2=>3", Q_out23/1000, "out", 0, "N/A"],
+         ["3=>4", 0, "N/A", W_in34/1000,"in"],
+         ["4=>1", Q_in41/1000, "in", 0, "N/A"]]
+headers = ["Process", "Q (MW)","in/out", "W (MW)", "in/out"]
+table = tabulate(dataT, headers,floatfmt=".2f", tablefmt="fancy_grid")
+print(table)
+
+datatask1 = [[n, W_net/1000, Q_net/1000]]
+headers = ["Thermal Efficiency", "Total Wout (MW)", "Total Qin (MW)"]
+task1 = tabulate(datatask1, headers,floatfmt=".2f", tablefmt="fancy_grid")
+print(task1)
+
+
+# plot [Task 2]
+
+#%% Using an array to create an "isobar"
+
+s_low = 100 # try changing this to plot more or less of the liquid phase
+s_high = 10000 # try changing this to plot more or less of the vapor phase
+snum = 1000 # this controls how many datapoints will be used
+s_array = np.linspace(s_low,s_high,snum)
+
+t_array_isobar1 = cp.PropsSI('T','S',s_array,'P',p2, 'Water')
+t_array_isobar2 = cp.PropsSI('T','S',s_array,'P',p1, 'Water')
+
+#dome
+t_low = 100 # try changing this to plot more or less of the liquid phase
+crit = cp.PropsSI('Tcrit','Water')
+t_high = 10000 # try changing this to plot more or less of the vapor phase
+t1_array = np.linspace(t_low,crit,snum)
+t2_array = np.linspace(crit,t_high,snum)
+
+s_array_dome1 = cp.PropsSI('S','T',t1_array,'Q',0,'Water')
+s_array_dome2 = cp.PropsSI('S','T',t2_array,'Q',.4,'Water')
+
+
+
+plt.close('all')
+fig, ax1 = plt.subplots(figsize=(8,4))
+
+font = {'family' : 'serif',
+        'weight' : 'normal',
+        'size'   : 14}
+plt.rc('font', **font)
+
+color1 = 'xkcd:black'
+color2 = 'xkcd:ugly green'
+color3 = 'xkcd:barney'
+color4 = 'xkcd:vivid blue'
+color5 = 'xkcd:strawberry'
+
+ax1.set_ylabel('Temperature (K)')
+ax1.set_xlabel('Specific Entropy (J/kg*K)')
+lns2 = ax1.plot(s_array,t_array_isobar2,'-',linewidth=1, color=color5,label='$p_H$')
+lns1 = ax1.plot(s_array,t_array_isobar1,'-',linewidth=1, color=color4,label='$p_L$')
+
+dome1 = ax1.plot(s_array_dome1,t1_array,'-',linewidth=1, color=color1)
+dome2 = ax1.plot(s_array_dome2,t2_array,'-',linewidth=1, color=color2)
+
+plt.plot(s1, T1, color=color1, marker='*', markersize=10, label='Point 1') # plots a point
+plt.plot(s2, T2, color='r', marker='*', markersize=10, label='Point 2')
+plt.plot(s3, T3, color='g', marker='*', markersize=10, label='Point 3')
+plt.plot(s4, T4, color='b', marker='*', markersize=10, label='Point 4')
+
+lns = lns1+lns2
+labs = [l.get_label() for l in lns]
+ax1.legend(lns, labs, loc=0)
+plt.legend(loc='upper left')
+
+plt.show()
+
