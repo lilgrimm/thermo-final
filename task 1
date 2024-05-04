@@ -17,7 +17,7 @@ s2 = s1
 p2 = 8000 #Pa
 h2s = cp.PropsSI('H', 'P', p2, 'S', s2, 'Water') #J/kg
 h2 = -(0.92*(h1 - h2s)) + h1
-T2 = cp.PropsSI('T', 'P', p2, 'H', h2, 'Water') #s2 may not make this true
+T2 = cp.PropsSI('T', 'P', p2, 'H', h2, 'Water')
 
 #state 3
 p3 = p2 #Pa
@@ -79,10 +79,10 @@ t_low = 100 # try changing this to plot more or less of the liquid phase
 crit = cp.PropsSI('Tcrit','Water')
 t_high = 10000 # try changing this to plot more or less of the vapor phase
 t1_array = np.linspace(t_low,crit,snum)
-t2_array = np.linspace(crit,t_high,snum)
+t2_array = np.linspace(crit,t_low,snum)
 
 s_array_dome1 = cp.PropsSI('S','T',t1_array,'Q',0,'Water')
-s_array_dome2 = cp.PropsSI('S','T',t2_array,'Q',.4,'Water')
+s_array_dome2 = cp.PropsSI('S','T',t2_array,'Q',1,'Water')
 
 
 
@@ -106,7 +106,7 @@ lns2 = ax1.plot(s_array,t_array_isobar2,'-',linewidth=1, color=color5,label='$p_
 lns1 = ax1.plot(s_array,t_array_isobar1,'-',linewidth=1, color=color4,label='$p_L$')
 
 dome1 = ax1.plot(s_array_dome1,t1_array,'-',linewidth=1, color=color1)
-dome2 = ax1.plot(s_array_dome2,t2_array,'-',linewidth=1, color=color2)
+dome2 = ax1.plot(s_array_dome2,t2_array,'-',linewidth=1, color=color1)
 
 plt.plot(s1, T1, color=color1, marker='*', markersize=10, label='Point 1') # plots a point
 plt.plot(s2, T2, color='r', marker='*', markersize=10, label='Point 2')
@@ -119,8 +119,4 @@ ax1.legend(lns, labs, loc=0)
 plt.legend(loc='upper left')
 
 plt.show()
-
-
-#task 6
-m_river = Q_out23 / (h2 - h3)
 
