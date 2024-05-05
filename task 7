@@ -24,6 +24,7 @@ h2s = cp.PropsSI('H', 'P', p2, 'S', s2, 'Water') #J/kg
 h2 = -(0.92*(h1 - h2s)) + h1
 T2 = cp.PropsSI('T', 'P', p2, 'H', h2, 'Water')
 Q2 = cp.PropsSI('Q', 'P', p2, 'H', h2, 'Water')
+s2 = cp.PropsSI('S', 'P', p2, 'H', h2, 'Water')
 
 #state 3
 m3 = m2 #kg/s
@@ -41,6 +42,7 @@ h4s = cp.PropsSI('H', 'P', p4, 'S', s4, 'Water') #J/kg
 h4 = -(0.92*(h3 - h4s)) + h3
 T4 = cp.PropsSI('T', 'P', p4, 'H', h4, 'Water')
 Q4 = cp.PropsSI('Q', 'P', p4, 'H', h4, 'Water')
+s4 = cp.PropsSI('S', 'P', p4, 'H', h4, 'Water')
 
 #state 5
 m5 = (1-percent_flow)*m4
@@ -58,6 +60,7 @@ h6s = cp.PropsSI('H', 'P', p6, 'S', s6, 'Water') #J/kg
 h6 = -(0.92*(h5 - h6s)) + h5
 Q6 = cp.PropsSI('Q', 'P', p6, 'H', h6, 'Water')
 T6 = cp.PropsSI('T', 'P', p6, 'H', h6, 'Water') #K
+s6 = cp.PropsSI('S', 'P', p6, 'H', h6, 'Water')
 
 #state 7
 p7 = 1.5e6
@@ -73,6 +76,7 @@ h8s = cp.PropsSI('H', 'P', p8, 'S', s8, 'Water') #J/kg
 h8 = -(0.92*(h7 - h8s)) + h7
 Q8 = cp.PropsSI('Q', 'P', p8, 'H', h8, 'Water')
 T8 = cp.PropsSI('T', 'P', p8, 'H', h8, 'Water') #K
+s8 = cp.PropsSI('S', 'P', p8, 'H', h8, 'Water')
 
 #state 9
 p9 = p8
@@ -83,12 +87,13 @@ Q9 = cp.PropsSI('Q', 'P', p9, 'Q', x9, 'Water')
 T9 = cp.PropsSI('T', 'P', p9, 'Q', x9, 'Water') #K
 
 #state 10
-p10 = p1 #assumption
+p10 = 5e6 #assumption, based off of closed feedwater heater
 s10 = s9
 h10s = cp.PropsSI('H', 'P', p10, 'S', s10, 'Water') #J/kg
 h10 = -((h9 - h10s)/0.85) + h9
 Q10 = cp.PropsSI('Q', 'P', p10, 'H', h10, 'Water')
 T10 = cp.PropsSI('T', 'P', p10, 'H', h10, 'Water') #K
+s10 = cp.PropsSI('S', 'P', p10, 'H', h10, 'Water')
 
 #state 11
 m11 = (percent_flow)*m4
@@ -112,8 +117,9 @@ h13 = cp.PropsSI('H', 'P', p13, 'Q', x13, 'Water') #J/kg
 s13 = cp.PropsSI('S', 'P', p13, 'Q', x13, 'Water') #J/(kg*K)
 Q13 = cp.PropsSI('Q', 'P', p13, 'Q', x13, 'Water')
 T13 = cp.PropsSI('T', 'P', p13, 'Q', x13, 'Water') #K
-m13 = (summer_op/1000)/(h12/1000-h13/1000)
 
+m13 = ((winter_op/1000)/(h12/1000-h13/1000))
+print(m13)
 #finding flow rate at 7
 m12 = m13
 m7 = (m6 - m12)
@@ -126,6 +132,7 @@ h14s = cp.PropsSI('H', 'P', p14, 'S', s14, 'Water') #J/kg
 h14 = -((h13 - h14s)/0.85) + h13
 Q14 = cp.PropsSI('Q', 'P', p14, 'S', s14, 'Water')
 T14 = cp.PropsSI('T', 'P', p14, 'S', s14, 'Water') #K
+s14 = cp.PropsSI('S', 'P', p14, 'S', s14, 'Water')
 
 #state 15 [COGEN]
 m15 = m1
@@ -147,6 +154,7 @@ h16s = cp.PropsSI('H', 'P', p16, 'S', s16, 'Water') #J/kg
 h16 = -((h15 - h16s)/0.85) + h15
 Q16 = cp.PropsSI('Q', 'P', p16, 'H', h16, 'Water')
 T16 = cp.PropsSI('T', 'P', p16, 'H', h16, 'Water') #K
+s16 = cp.PropsSI('S', 'P', p16, 'H', h16, 'Water')
 
 #state check
 # T = T1
