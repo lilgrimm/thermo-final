@@ -1,2 +1,15 @@
 #task 6
-m_river = Q_out23 / (h2 - h3)
+#average temp of river water ~ 12 C = 285.15 K
+#average pressure at sea level ~ 14.6 psi = 100663.5 Pa
+Ta = 285.15
+Pa = 100663.5
+# Ta = 300
+# Pa = 100000
+C_v = cp.PropsSI('CPMASS', 'T', Ta, 'P', Pa, 'Water') #J/kg/K
+C_p = cp.PropsSI('CVMASS', 'T', Ta, 'P', Pa, 'Water') #J/kg/K
+
+m_river = (C_v + Q_out23) / C_p #delivers in kg/s
+m_river_final = (m_river / 3.79) * 86400
+print(m_river_final)
+
+
